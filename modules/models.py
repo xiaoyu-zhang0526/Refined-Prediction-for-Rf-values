@@ -633,7 +633,7 @@ class Model_ML():
             print(f'{j}:{smiles}')
 
 
-    def test(self,X_test,y_test,data_array,model):
+    def test(self,X_test,y_test,model):
         '''
         Get test outcomes
         '''

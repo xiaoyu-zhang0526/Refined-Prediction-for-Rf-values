@@ -52,7 +52,7 @@ def init_args():
     parser.add_argument('--NN_hidden_neuron', type=int, default=128, help='hidden neurons for NN')
     parser.add_argument('--NN_optimizer', type=str, default='Adam', help='optimizer for NN (Adam,SGD,RMSprop)')
     parser.add_argument('--NN_lr', type=float, default=0.005, help='learning rate for NN')
-    parser.add_argument('--NN_model_save_location', type=str, default=os.path.join(os.getcwd(),'model_save_NN'), help='learning rate for NN')
+    parser.add_argument('--NN_model_save_location', type=str, default=os.path.join(os.getcwd(),'model','ANN'), help='learning rate for NN')
     parser.add_argument('--NN_max_epoch', type=int, default=5000, help='max training epoch for NN')
     parser.add_argument('--NN_add_sigmoid', type=bool, default=True, help='whether add sigmoid in NN')
     parser.add_argument('--NN_add_PINN', type=bool, default=False, help='whether add PINN in NN')
@@ -68,7 +68,7 @@ def parse_args():
 
 def parse_args_predict():
     parser = init_args()
-    parser.add_argument('--model_load_path', type=str, default=os.path.join(os.getcwd(),'model/model.pkl'), help='path of model load')
+    parser.add_argument('--model_save_path', type=str, default=os.path.join(os.getcwd(),'model','Ensemble.pkl'), help='path of model load')
     parser.add_argument('--smile_str', type=str, default='O=C(OC1C(OC(C)=O)C(OC(C)=O)C(OC(C)=O)C(COC(C)=O)O1)C', help='smile string')
     parser.add_argument('--dipole_num', type=float, default=4.707, help='dipole moment')
     

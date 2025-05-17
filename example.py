@@ -12,6 +12,6 @@ if __name__ == "__main__":
         'CC(OC[C@@H]1[C@@H](OC(C)=O)[C@H](OC(C)=O)C=CO1)=O'
     ]
     diploe=[4.707,6.66,2.756,3.295]
-    config = parse_args()
+    config = parse_args_predict()
     for i in range(4):
         predict_single(config,smiles[i],diploe[i])

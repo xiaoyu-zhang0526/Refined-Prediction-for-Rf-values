@@ -15,14 +15,11 @@ warnings.filterwarnings("ignore")
 
 def predict_single(config,smile,dipole=-1):
     # config = parse_args()
+    Data = Dataset_process(config)
+    Model = Model_ML(config)
     if dipole==-1:
         config.add_dipole = False
-        Data = Dataset_process(config)
-        X_train, y_train, X_validate, y_validate, X_test, y_test, data_array = Data.split_dataset()
-        Model = Model_ML(config)
-        model = Model.train(X_train, y_train, X_validate, y_validate)
-        y_pred, MSE, RMSE, MAE, R_square = Model.test(X_test, y_test, data_array, model)
-
+        model = load_model(config)
         compound_mol = Chem.MolFromSmiles(smile)
         Finger = MACCSkeys.GenMACCSKeys(Chem.MolFromSmiles(smile))
         fingerprint = np.array([x for x in Finger])
@@ -40,13 +37,7 @@ def predict_single(config,smile,dipole=-1):
         X_test[0, 173:179] = [compound_MolWt, compound_TPSA, compound_nRotB, compound_HBD, compound_HBA, compound_LogP]
     else:
         config.add_dipole = True
-        Data = Dataset_process(config)
-        X_train, y_train, X_validate, y_validate, X_test, y_test, data_array = Data.split_dataset()
-        Model = Model_ML(config)
-        model = Model.train(X_train, y_train, X_validate, y_validate)
-        y_pred, MSE, RMSE, MAE, R_square = Model.test(X_test, y_test, data_array, model)
-        # print(R_square)
-
+        model = load_model(config)
         compound_mol = Chem.MolFromSmiles(smile)
         Finger = MACCSkeys.GenMACCSKeys(Chem.MolFromSmiles(smile))
         fingerprint = np.array([x for x in Finger])
@@ -77,10 +68,7 @@ def predict_single(config,smile,dipole=-1):
     print(smile)
     for i in range(eluent.shape[0]):
         X_test[0,167:173] = eluent[i]
-        y_pred, MSE, RMSE, MAE, R_square = Model.test(X_test.reshape(1, X_test.shape[1]),
-                                                        y[0],
-                                                        data_array, model)
-
+        y_pred, MSE, RMSE, MAE, R_square = Model.test(X_test.reshape(1, X_test.shape[1]),y[0],model)
         print(y_pred[0])
 
 
@@ -91,12 +79,21 @@ def train_model(config):
     X_train, y_train, X_validate, y_validate, X_test, y_test, data_array = Data.split_dataset()
     Model = Model_ML(config)
     model = Model.train(X_train, y_train, X_validate, y_validate)
-    y_pred, MSE, RMSE, MAE, R_square = Model.test(X_test, y_test, data_array, model)
+    y_pred, MSE, RMSE, MAE, R_square = Model.test(X_test, y_test, model)
     # save model with pickle
     with open(save_path, 'wb') as f:
         pickle.dump(model, f)
     print("Model saved to", save_path)
     print(R_square)
+
+def load_model(config):
+    model_path = config.model_save_path
+    if not os.path.exists(model_path):
+        config.model_save_path = os.path.dirname(config.model_save_path)
+        train_model(config)
+    with open(model_path, 'rb') as f:
+        model = pickle.load(f)
+    return model
 
 
     

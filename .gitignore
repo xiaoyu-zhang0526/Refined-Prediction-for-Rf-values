@@ -1,2 +1,4 @@
 model_save_NN
 modules/__pycache__
+model/*.pkl
+model/**
