@@ -1,0 +1,12 @@
+scikit-learn
+matplotlib
+pymysql
+pandas
+rdkit
+numpy
+mordred
+xgboost
+torch
+Pillow
+lightgbm<4.0.0
+tqdm
