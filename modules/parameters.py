@@ -71,7 +71,8 @@ def parse_args_predict():
     parser.add_argument('--model_save_path', type=str, default=os.path.join(os.getcwd(),'model','Ensemble.pkl'), help='path of model load')
     parser.add_argument('--smile_str', type=str, default='O=C(OC1C(OC(C)=O)C(OC(C)=O)C(OC(C)=O)C(COC(C)=O)O1)C', help='smile string')
     parser.add_argument('--dipole_num', type=float, default=4.707, help='dipole moment')
-    
+    parser.add_argument('--eluent_origin', type=str, default="[0.5, 0.5, 0, 0, 0]", help='eluent origin')
     config = parser.parse_args()
+    config.eluent_origin = eval(config.eluent_origin)
     config.device = 'cuda' if torch.cuda.is_available() else 'cpu'
     return config

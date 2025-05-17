@@ -56,24 +56,24 @@ def predict_single(config,smile,dipole=-1):
         X_test[0, 174:180] = [compound_MolWt, compound_TPSA, compound_nRotB, compound_HBD, compound_HBA, compound_LogP]
     y=np.array([0.23]).reshape([1,1])
     X_test = X_test.copy()
-    eluent_origin = np.array([[1, 0, 0, 0, 0], [0.980392, 0.019608, 0, 0, 0], [0.952381, 0.047619, 0, 0, 0],
-                  [0.833333, 0.166667, 0, 0, 0], [0.75, 0.25, 0, 0, 0], [0.5, 0.5, 0, 0, 0],
-                  [0.333333, 0.666667, 0, 0, 0], [0, 1, 0, 0, 0],[0, 0, 1, 0, 0], [0, 0, 0.990099, 0.009901, 0], [0, 0, 0.980392, 0.019608, 0],
-                        [0, 0, 0.967742, 0.032258, 0], [0, 0, 0.952381, 0.047619, 0], [0, 0, 0.909091, 0.090909, 0]], dtype=np.float32)
-    eluent = []
 
+
+    eluent_origin = np.array([config.eluent_origin], dtype=np.float32)
+    eluent = []
+    print(config.eluent_origin)
     for i in range(eluent_origin.shape[0]):
-        eluent.append(Data.get_eluent_descriptor(eluent_origin[i]))
+        eluent.append(Data.get_eluent_descriptor(eluent_origin[0]))
     eluent = np.array(eluent)
-    print(smile)
-    for i in range(eluent.shape[0]):
-        X_test[0,167:173] = eluent[i]
-        y_pred, MSE, RMSE, MAE, R_square = Model.test(X_test.reshape(1, X_test.shape[1]),y[0],model)
-        print(y_pred[0])
+
+    X_test[0,167:173] = eluent[0]
+    y_pred, MSE, RMSE, MAE, R_square = Model.test(X_test.reshape(1, X_test.shape[1]),y[0],model)
+    print(f'smile表达式: {smile}')
+    print(f'使用的洗脱剂配比: {config.eluent_origin}')
+    print(f'预测Rf值: {y_pred[0]}')
+
 
 
 def train_model(config):
-    config.add_dipole = True
     save_path = os.path.join(config.model_save_path,config.use_model + '.pkl')
     Data = Dataset_process(config)
     X_train, y_train, X_validate, y_validate, X_test, y_test, data_array = Data.split_dataset()
